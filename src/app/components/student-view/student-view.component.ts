@@ -1,8 +1,7 @@
-//student-view.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Student } from 'src/app/models/student';
-import { StudentAsyncService } from 'src/app/services/student-async.service';
-import { CareerAsyncService } from 'src/app/services/career-async.service';
+import { StudentService } from 'src/app/services/student.service';
+import { CareerService } from 'src/app/services/career.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -15,21 +14,21 @@ export class StudentViewComponent implements OnInit {
 
   careerName: string;
 
-  constructor(private studentService: StudentAsyncService, private careerService: CareerAsyncService, private route: ActivatedRoute) { }
+  constructor(private studentService: StudentService, private careerService: CareerService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     let studentId = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.studentService.getById(studentId).then(response => {
+    this.studentService.getById(studentId).subscribe(response => {
       this.student = response;
       if (this.student.careerId !== null) {
-        this.careerService.getById(this.student.careerId).then(response => {
+        this.careerService.getById(this.student.careerId).subscribe(response => {
           this.careerName = response.name;
-        });
+        })
       }
-    }).catch(error => {
+    }, error => {
       console.error(error);
       alert("Error: " + error.error.message);
-    });
+    })
   }
 }

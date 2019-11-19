@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Student } from 'src/app/models/student';
 import { Career } from 'src/app/models/career';
-import { StudentAsyncService } from 'src/app/services/student-async.service';
-import { CareerAsyncService } from 'src/app/services/career-async.service';
+import { StudentService } from 'src/app/services/student.service';
+import { CareerService } from 'src/app/services/career.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-student-edit',
@@ -17,7 +17,7 @@ export class StudentEditComponent implements OnInit {
   careerId: number;
   studentForm: FormGroup;
 
-  constructor(private studentService: StudentAsyncService, private careerService: CareerAsyncService, private route: ActivatedRoute) { }
+  constructor(private studentService: StudentService, private careerService: CareerService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     let studentId = Number(this.route.snapshot.paramMap.get('id'));
@@ -27,8 +27,8 @@ export class StudentEditComponent implements OnInit {
       'dni': new FormControl(this.student.dni, [Validators.required]),
       'email': new FormControl(this.student.email, [Validators.required]),
       'address': new FormControl(this.student.address, [Validators.required])
-    });
-    this.studentService.getById(studentId).then(response => {
+    })
+    this.studentService.getById(studentId).subscribe(response => {
       this.student = response;
       this.firstName.setValue(this.student.firstName);
       this.lastName.setValue(this.student.lastName);
@@ -37,13 +37,13 @@ export class StudentEditComponent implements OnInit {
       this.address.setValue(this.student.address);
       this.careerId = this.student.careerId;
       document.getElementsByTagName("input")[0].focus();
-      this.careerService.getAll().then(response => {
+      this.careerService.getAll().subscribe(response => {
         this.careerList = response;
-      });
-    }).catch(error => {
+      })
+    }, error => {
       console.error(error);
       alert("Error: " + error.error.message);
-    });
+    })
   }
 
   get lastName() { return this.studentForm.get('lastName'); }
@@ -52,7 +52,7 @@ export class StudentEditComponent implements OnInit {
   get email() { return this.studentForm.get('email'); }
   get address() { return this.studentForm.get('address'); }
 
-  editStudent() {
+  edit() {
     let student = new Student();
     student.studentId = this.student.studentId;
     student.firstName = this.firstName.value;
@@ -62,12 +62,12 @@ export class StudentEditComponent implements OnInit {
     student.address = this.address.value;
     student.careerId = this.careerId;
 
-    this.studentService.edit(student).then(() => {
+    this.studentService.edit(student).subscribe(() => {
       alert("Modificación Exitosa!");
-      document.getElementsByTagName("input")[0].focus();
-    }).catch(error => {
+      this.router.navigateByUrl("/list");
+    }, error => {
       console.error(error);
       alert("Error: " + error.error.message);
-    });
+    })
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Career } from 'src/app/models/career';
-import { CareerAsyncService } from 'src/app/services/career-async.service';
+import { CareerService } from 'src/app/services/career.service';
 
 @Component({
   selector: 'app-career-list',
@@ -10,14 +10,14 @@ import { CareerAsyncService } from 'src/app/services/career-async.service';
 export class CareerListComponent implements OnInit {
   careerList = new Array<Career>();
 
-  constructor(private careerService: CareerAsyncService) { }
+  constructor(private careerService: CareerService) { }
 
   ngOnInit() {
-    this.careerService.getAll().then(response => {
+    this.careerService.getAll().subscribe(response => {
       this.careerList = response;
-    }).catch(error => {
+    }, error => {
       console.error(error);
       alert("Error: " + error.error.message);
-    });
+    })
   }
 }

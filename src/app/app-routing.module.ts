@@ -1,4 +1,3 @@
-//app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { StudentAddComponent } from './components/student-add/student-add.component';
@@ -6,18 +5,19 @@ import { StudentViewComponent } from './components/student-view/student-view.com
 import { StudentEditComponent } from './components/student-edit/student-edit.component';
 import { StudentListComponent } from './components/student-list/student-list.component';
 import { CareerListComponent } from './components/career-list/career-list.component';
-import { SignUpComponent } from './components/sign-up/sign-up.component';
-import { LogInComponent } from './components/log-in/log-in.component';
+import { UserSignUpComponent } from './components/user-signup/user-signup.component';
+import { UserLogInComponent } from './components/user-login/user-login.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { AuthGuard } from './auth/auth.guard';
 
 const appRoutes: Routes = [
-  { path: 'add', component: StudentAddComponent },
-  { path: 'view/:id', component: StudentViewComponent },
-  { path: 'edit/:id', component: StudentEditComponent },
-  { path: 'list', component: StudentListComponent },
-  { path: 'career', component: CareerListComponent },
-  { path: 'signup', component: SignUpComponent },
-  { path: 'login', component: LogInComponent },
+  { path: 'add', component: StudentAddComponent, canActivate: [AuthGuard] },
+  { path: 'view/:id', component: StudentViewComponent, canActivate: [AuthGuard] },
+  { path: 'edit/:id', component: StudentEditComponent, canActivate: [AuthGuard] },
+  { path: 'list', component: StudentListComponent, canActivate: [AuthGuard] },
+  { path: 'career', component: CareerListComponent, canActivate: [AuthGuard] },
+  { path: 'signup', component: UserSignUpComponent },
+  { path: 'login', component: UserLogInComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
@@ -26,7 +26,7 @@ const appRoutes: Routes = [
   imports: [
     RouterModule.forRoot(
       appRoutes,
-      { enableTracing: true } // <-- debugging purposes only
+      { enableTracing: false }
     )
   ],
   exports: [

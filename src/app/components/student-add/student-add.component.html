@@ -26,6 +26,7 @@
                             <input type="text" formControlName="dni" class="form-control">
                             <div *ngIf="dni.invalid && (dni.dirty || dni.touched)">
                                 <p *ngIf="dni.errors.required" style="font-size: small; color: red">required</p>
+                                <p *ngIf="dni.errors.DNITaken" style="font-size: small; color: red">already exists</p>
                             </div>
                         </div>
                     </div>
@@ -36,6 +37,7 @@
                             <input type="email" formControlName="email" class="form-control">
                             <div *ngIf="email.invalid && (email.dirty || email.touched)">
                                 <p *ngIf="email.errors.required" style="font-size: small; color: red">required</p>
+                                <p *ngIf="email.errors.email" style="font-size: small; color: red">invalid email</p>
                             </div>
                         </div>
 
@@ -49,15 +51,14 @@
 
                         <div class="col-lg-4">
                             <label>Career</label>
-                            <select [(ngModel)]="careerId" [ngModelOptions]="{standalone: true}" class="form-control">
-                                <option *ngFor="let career of careerList" [(ngValue)]="career.careerId">{{career.name}}
-                                </option>
+                            <select formControlName="careerId" class="form-control">
+                                <option *ngFor="let career of careerList" [value]="career.careerId">{{career.name}}</option>
                             </select>
                         </div>
                     </div>
 
                     <hr class="mb-4">
-                    <button type="button" class="btn btn-primary" (click)="addStudent()">Add</button>
+                    <button type="button" class="btn btn-primary" [disabled]="!studentForm.valid" (click)="addStudent()">Add</button>
                 </div>
             </div>
         </form>
